@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New constructeur
+
+{% endblock %}
+
+{% form_theme constructeurForm 'bootstrap_5_layout.html.twig' %}
+
+
+{% block body %}
+	<div class="container m-2">
+		<div class="row">
+			<h1>Add New Manufacturer</h1>
+			<div class="col-8 p-2">
+				{{form_start(constructeurForm)}}
+				{{form_row(constructeurForm.name)}}
+				{{form_row(constructeurForm.imageLogo)}}
+
+				{{form_row(constructeurForm.origin)}}
+				{{form_row(constructeurForm.description)}}
+				{{form_row(constructeurForm.address)}}
+				<button class="btn btn-success mb-2" type="submit">Add New Constructeur</button>
+				{{form_end(constructeurForm)}}
+				<br>
+				<a href="{{path('phone')}}" class="btn btn-info">home</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

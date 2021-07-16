@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Constructor List
+{% endblock %}
+
+{% block body %}
+	<div class="container m-2">
+		<div class="row">
+			{% for constructeur in constructeurs %}
+				<div class=" col-3 p-3 m-1">
+					<img style="max-width: 200px" src="https://placeimg.com/640/480/tech" alt="">
+					<h3>Made by:
+						{{constructeur.name}}</h3>
+					<h4>made in:
+						{{constructeur.origin}}</h4>
+					<a href="{{path('show_constructeur', {id:constructeur.id })}}" class="btn btn-info">More</a>
+
+
+				</div>
+			{% endfor %}
+			<div class="col-4">
+				<a href="{{path('phone')}}" class="btn btn-dark">Phones List</a>
+				<a href="{{path('new_constructeur')}}" class="btn btn-dark">Add Manufacturer</a>
+
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

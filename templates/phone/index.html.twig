@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PhoneController!
+{% endblock %}
+
+{% block body %}
+	<div class="container m-2">
+		<h1>phone listings</h1>
+		<div class="row">
+			{% for phone in phones %}
+				<div class=" col-3 p-3 m-1">
+					<img style="max-width: 200px" src="https://placeimg.com/640/480/tech" alt="">
+					<h3>Model Name:
+						{{phone.modelName}}</h3>
+					<h4>Price: ${{phone.price}}</h4>
+					<p>About:
+						{{phone.description}}</p>
+
+					<a href="{{path('show_phone', {id: phone.id}) }}" class="btn btn-info">More</a>
+
+				</div>
+			{% endfor %}
+
+		</div>
+		<div class="row">
+			<div class="col-4">
+				<a href="{{path('new_phone') }}" class="btn btn-info my-2">Add Phone</a>
+				<a href="{{path('constructeur')}}" class="btn btn-dark">Constructeurs List</a>
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{phone.modelName}}
+
+{% endblock %}
+
+{% block body %}
+	<div class="container m-2">
+		<div class="row">
+			<div class="col-3 p-3 m-1">
+				<img src="https://placeimg.com/640/480/tech" alt="">
+				<h3>Model Name:
+					{{phone.modelName}}</h3>
+				<h4>Price: ${{phone.price}}</h4>
+				<p>About:
+					{{phone.description}}</p>
+				<a href="{{path('delete_phone', {id: phone.id})}}" class="btn btn-danger">delete</a>
+				<a href="{{path('edit_phone', {id: phone.id})}}" class="btn btn-warning">Edit</a>
+
+				<a href="{{path('phone')}}" class="btn btn-info">home</a>
+
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
