@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\ConstructeurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ConstructeurRepository::class)
+ * @UniqueEntity("name")
  */
 class Constructeur
 {
@@ -14,16 +19,22 @@ class Constructeur
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 4,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
      */
     private $imageLogo;
 
@@ -34,6 +45,10 @@ class Constructeur
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(
+     *      min = 20,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long"
+     * )
      */
     private $description;
 
@@ -41,6 +56,16 @@ class Constructeur
      * @ORM\Column(type="text")
      */
     private $address;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Phone::class, mappedBy="constructeur", orphanRemoval=true)
+     */
+    private $phone;
+
+    public function __construct()
+    {
+        $this->phone = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +128,36 @@ class Constructeur
     public function setAddress(string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Phone[]
+     */
+    public function getPhone(): Collection
+    {
+        return $this->phone;
+    }
+
+    public function addPhone(Phone $phone): self
+    {
+        if (!$this->phone->contains($phone)) {
+            $this->phone[] = $phone;
+            $phone->setConstructeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhone(Phone $phone): self
+    {
+        if ($this->phone->removeElement($phone)) {
+            // set the owning side to null (unless already changed)
+            if ($phone->getConstructeur() === $this) {
+                $phone->setConstructeur(null);
+            }
+        }
 
         return $this;
     }

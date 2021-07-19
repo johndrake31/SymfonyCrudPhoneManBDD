@@ -6,6 +6,7 @@ use App\Repository\PhoneRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * @ORM\Entity(repositoryClass=PhoneRepository::class)
  */
@@ -20,6 +21,10 @@ class Phone
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 4,
+     *      minMessage = "Model name must be at least {{ limit }} characters long"
+     * )
      */
     private $modelName;
 
@@ -30,16 +35,27 @@ class Phone
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(
+     *      0,
+     *      message = "price has to be greater than {{ limit }}."
+     * )
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(
+     *      min = 30,
+     *      minMessage = "description must be at least {{ limit }} characters long"
+     * )
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\LessThanOrEqual(
+     * 512,
+     * message = "The max limit of stock is 512." )
      */
     private $stockage;
 
@@ -47,6 +63,12 @@ class Phone
      * @ORM\Column(type="datetime")
      */
     private $createdDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Constructeur::class, inversedBy="phone")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $constructeur;
 
     public function getId(): ?int
     {
@@ -121,6 +143,18 @@ class Phone
     public function setCreatedDate(\DateTimeInterface $createdDate): self
     {
         $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    public function getConstructeur(): ?Constructeur
+    {
+        return $this->constructeur;
+    }
+
+    public function setConstructeur(?Constructeur $constructeur): self
+    {
+        $this->constructeur = $constructeur;
 
         return $this;
     }
