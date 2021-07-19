@@ -2,32 +2,66 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\User;
+use App\Form\RegisterType;
+use Doctrine\ORM\EntityManagerInterface as EMI;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthController extends AbstractController
 {
+
     /**
      * 
-     * Route("/auth", name="auth")
+     *@Route("/register", name="register")
      */
-    public function index(): Response
+    public function register(User $user = null, Request $req, EMI $em, UserPasswordHasherInterface $hash): Response
     {
-        return $this->render('auth/index.html.twig', [
-            'controller_name' => 'AuthController',
+        if (!$user) {
+            $creationMode = true;
+            $user = new User();
+        }
+
+        $form = $this->createForm(RegisterType::class, $user);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $form->getData();
+            $hashedPassword = $hash->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('login');
+        }
+
+
+        return $this->render('auth/register.html.twig', [
+            'registrationForm' => $form->createView(),
+            'creationMode' => $creationMode,
+
+
         ]);
     }
 
     /**
-     * 
-     * Route("/register", name="register")
+     * @Route("/login", name="login")
      */
-    public function register(): Response
+    public function login(): Response
     {
-        $hello = "hello";
-        return $this->render('auth/register.html.twig', [
-            'hello' => $hello
-        ]);
+        // all functionality handled by security yaml
+        return $this->render('auth/login.html.twig', []);
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout()
+    {
+        // all functionality handled by security yaml
     }
 }

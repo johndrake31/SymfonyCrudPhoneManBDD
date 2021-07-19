@@ -4,11 +4,15 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity("userName")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -17,10 +21,6 @@ class User
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -29,26 +29,20 @@ class User
 
     /**
      * 
-     * @Assert\IdenticalTo("password")
+     * @Assert\EqualTo("password")
      */
     private $passwordConfirm;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $userName;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
 
     public function getPassword(): ?string
     {
@@ -78,7 +72,7 @@ class User
     {
     }
 
-    public function eraseCredintials()
+    public function eraseCredentials()
     {
     }
     public function getRoles()
@@ -87,6 +81,18 @@ class User
     }
     public function getUserIdentifier()
     {
-        return $this->username;
+        return $this->userName;
+    }
+
+    public function getUserName(): ?string
+    {
+        return $this->userName;
+    }
+
+    public function setUserName(string $userName): self
+    {
+        $this->userName = $userName;
+
+        return $this;
     }
 }
